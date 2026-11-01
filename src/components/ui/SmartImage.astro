@@ -1,0 +1,47 @@
+---
+// Responsive image by filename. Falls back to an ornamental placeholder if the file is missing,
+// so the build never breaks while photography is pending.
+import { Picture } from 'astro:assets';
+import { findImage } from '../../lib/images';
+import Pattern from '../ornament/Pattern.astro';
+
+interface Props {
+  name: string;
+  alt: string;
+  sizes: string;
+  priority?: boolean;
+  class?: string;
+  imgClass?: string;
+}
+const { name, alt, sizes, priority = false, class: cls = '', imgClass = '' } = Astro.props;
+
+const img = findImage(name);
+const widths = img
+  ? [...new Set([360, 540, 720, 960, 1280].filter((w) => w < img.width).concat(img.width))]
+  : [];
+---
+
+{
+  img ? (
+    <Picture
+      src={img}
+      alt={alt}
+      widths={widths}
+      sizes={sizes}
+      formats={['avif', 'webp']}
+      quality={78}
+      loading={priority ? 'eager' : 'lazy'}
+      decoding={priority ? 'sync' : 'async'}
+      fetchpriority={priority ? 'high' : 'auto'}
+      class:list={['block h-full w-full object-cover', imgClass]}
+      pictureAttributes={{ class: `block h-full w-full ${cls}` }}
+    />
+  ) : (
+    <div class:list={['relative h-full w-full bg-smoke text-gold', cls]} role={alt ? 'img' : undefined} aria-label={alt || undefined}>
+      <Pattern id={`fallback-${name}`} size={60} class="absolute inset-0 h-full w-full opacity-25" />
+      {import.meta.env.DEV && (
+        <span class="absolute inset-x-0 bottom-6 text-center font-sans text-xs tracking-widest text-mute">{name}</span>
+      )}
+    </div>
+  )
+}

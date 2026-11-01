@@ -1,0 +1,18 @@
+---
+// Fanous (lantern) line icon.
+interface Props {
+  class?: string;
+}
+const { class: cls = '' } = Astro.props;
+---
+
+<svg class={cls} viewBox="0 0 20 34" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  <path d="M10 1v3"></path>
+  <circle cx="10" cy="5.5" r="1.5"></circle>
+  <path d="M6 9.5 10 7l4 2.5"></path>
+  <path d="M4 10h12l-1.5 4h-9z"></path>
+  <path d="M5.5 14 4 26h12l-1.5-12"></path>
+  <path d="M10 14v12M7 17.5h6M7 22.5h6"></path>
+  <path d="M4 26h12l-2.5 4h-7z"></path>
+  <path d="M10 30v3"></path>
+</svg>

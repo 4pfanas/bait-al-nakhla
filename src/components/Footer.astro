@@ -1,0 +1,36 @@
+---
+import type { Lang } from '../data/site';
+import { site, whatsappLink, pathFor } from '../data/site';
+import type { Content } from '../data/content';
+import Mark from './ornament/Mark.astro';
+
+interface Props {
+  lang: Lang;
+  c: Content;
+}
+const { lang, c } = Astro.props;
+const other = c.nav.switchLang;
+---
+
+<footer class="border-t border-line">
+  <div class="container-x flex flex-col gap-10 py-14 md:flex-row md:items-end md:justify-between">
+    <div>
+      <a href="#top" class="flex items-center gap-3 text-sand" aria-label={c.footer.top}>
+        <Mark class="h-9 w-7 text-gold" />
+        <span class="t-display text-[1.6rem]">{site.brand[lang]}</span>
+      </a>
+      <p class="mt-5 font-sans text-[0.8rem] leading-relaxed text-mute rtl:font-[family-name:var(--font-arabic)] rtl:text-[0.95rem]">
+        {c.footer.copyright}
+        {site.isDemo && <span> · {c.footer.demo}</span>}
+      </p>
+    </div>
+    <div class="flex items-center gap-8">
+      <a href={whatsappLink(lang)} target="_blank" rel="noopener" class="t-nav link-line py-2 text-gold-bright">
+        {c.cta.reserve}
+      </a>
+      <a href={pathFor(other)} hreflang={other} lang={other} class="t-nav link-line py-2" data-lang-switch>
+        {c.nav.switchLabel}
+      </a>
+    </div>
+  </div>
+</footer>

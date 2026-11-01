@@ -1,0 +1,52 @@
+---
+import type { Lang } from '../data/site';
+import { site, whatsappLink, pathFor } from '../data/site';
+import type { Content } from '../data/content';
+import Mark from './ornament/Mark.astro';
+import Button from './ui/Button.astro';
+
+interface Props {
+  lang: Lang;
+  c: Content;
+}
+const { lang, c } = Astro.props;
+const other = c.nav.switchLang;
+---
+
+<header class="site-header fixed inset-x-0 top-0 z-50" data-header>
+  <div class="container-x flex h-[68px] items-center justify-between gap-4 md:h-[84px]">
+    <a href={pathFor(lang)} class="flex items-center gap-2.5 text-sand md:gap-3" aria-label={c.nav.home}>
+      <Mark class="h-8 w-[26px] shrink-0 text-gold" />
+      <span class="t-display whitespace-nowrap text-[1.15rem] tracking-[0.02em] md:text-[1.45rem]">
+        {site.brand[lang]}
+      </span>
+    </a>
+
+    <nav aria-label={c.nav.label} class="hidden lg:block">
+      <ul class="flex items-center gap-10">
+        {
+          c.nav.links.slice(0, 3).map((link) => (
+            <li>
+              <a href={link.href} class="t-nav link-line py-2">
+                {link.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="flex items-center gap-4 md:gap-7">
+      <a
+        href={pathFor(other)}
+        hreflang={other}
+        lang={other}
+        class="t-nav link-line py-2"
+        data-lang-switch
+      >
+        {c.nav.switchLabel}
+      </a>
+      <Button href={whatsappLink(lang)} label={c.cta.reserve} short={c.cta.reserveShort} size="sm" external />
+    </div>
+  </div>
+</header>

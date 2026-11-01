@@ -1,0 +1,25 @@
+---
+// Khatam eight-point star tile, drawn as thin lines. Colour comes from `currentColor`.
+interface Props {
+  id: string;
+  size?: number;
+  class?: string;
+}
+const { id, size = 90, class: cls = '' } = Astro.props;
+---
+
+<svg class={cls} aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <pattern id={id} width={size} height={size} patternUnits="userSpaceOnUse" viewBox="0 0 100 100">
+      <g fill="none" stroke="currentColor" stroke-width="0.9">
+        <rect x="25" y="25" width="50" height="50"></rect>
+        <rect x="25" y="25" width="50" height="50" transform="rotate(45 50 50)"></rect>
+        <circle cx="50" cy="50" r="11"></circle>
+        <path
+          d="M0 0L25 25M100 0L75 25M0 100L25 75M100 100L75 75M50 0V14.6M50 100V85.4M0 50H14.6M100 50H85.4"
+        ></path>
+      </g>
+    </pattern>
+  </defs>
+  <rect width="100%" height="100%" fill={`url(#${id})`}></rect>
+</svg>

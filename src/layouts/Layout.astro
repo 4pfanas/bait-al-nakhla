@@ -1,0 +1,104 @@
+---
+// Self-hosted fonts (only the subsets and weights we use; unicode-range means each loads on demand).
+import '@fontsource/cormorant-garamond/latin-400.css';
+import '@fontsource/cormorant-garamond/latin-500.css';
+import '@fontsource/cormorant-garamond/latin-400-italic.css';
+import '@fontsource/jost/latin-300.css';
+import '@fontsource/jost/latin-400.css';
+import '@fontsource/jost/latin-500.css';
+import '@fontsource/amiri/arabic-400.css';
+import '@fontsource/amiri/arabic-700.css';
+import '../styles/global.css';
+
+import { getImage } from 'astro:assets';
+import type { Lang } from '../data/site';
+import { site, pathFor } from '../data/site';
+import { content } from '../data/content';
+import { findImage } from '../lib/images';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = content[lang];
+const dir = lang === 'ar' ? 'rtl' : 'ltr';
+const base = Astro.site ?? new URL(Astro.url.origin);
+const canonical = new URL(pathFor(lang), base).href;
+const enUrl = new URL(pathFor('en'), base).href;
+const arUrl = new URL(pathFor('ar'), base).href;
+
+const heroMeta = findImage('hero-coffee');
+const og = heroMeta ? await getImage({ src: heroMeta, width: heroMeta.width, format: 'jpg' }) : undefined;
+const ogUrl = og ? new URL(og.src, base).href : undefined;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Restaurant',
+  name: site.brand[lang],
+  servesCuisine: 'Emirati',
+  inLanguage: lang,
+  url: canonical,
+  image: ogUrl,
+  priceRange: '$$$',
+  openingHours: site.openingHours,
+  acceptsReservations: true,
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: site.address.locality,
+    streetAddress: site.address.area,
+    addressCountry: site.address.country,
+  },
+};
+---
+
+<!doctype html>
+<html lang={lang} dir={dir}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{c.meta.title}</title>
+    <meta name="description" content={c.meta.description} />
+    {site.isDemo && <meta name="robots" content="noindex" />}
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="ar" href={arUrl} />
+    <link rel="alternate" hreflang="x-default" href={enUrl} />
+    <meta name="theme-color" content={site.themeColor} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={c.meta.title} />
+    <meta property="og:description" content={c.meta.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content={lang === 'ar' ? 'ar_AE' : 'en_AE'} />
+    {ogUrl && <meta property="og:image" content={ogUrl} />}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={c.meta.title} />
+    <meta name="twitter:description" content={c.meta.description} />
+    {ogUrl && <meta name="twitter:image" content={ogUrl} />}
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+    <!-- Turn on motion states only when JS runs and the visitor hasn't asked for reduced motion.
+         If the motion script never reports ready, content is revealed after 4s anyway. -->
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        d.classList.add('js-motion');
+        setTimeout(function () {
+          if (!d.classList.contains('motion-ready')) d.classList.remove('js-motion');
+        }, 4000);
+      })();
+    </script>
+  </head>
+  <body>
+    <a href="#main" class="skip-link">{c.nav.skip}</a>
+    <slot />
+    <div class="grain" aria-hidden="true"></div>
+    <script>
+      import { initMotion } from '../scripts/motion';
+      initMotion();
+    </script>
+  </body>
+</html>

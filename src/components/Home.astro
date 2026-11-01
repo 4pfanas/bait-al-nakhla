@@ -1,0 +1,27 @@
+---
+import type { Lang } from '../data/site';
+import { content } from '../data/content';
+import Header from './Header.astro';
+import Hero from './Hero.astro';
+import Story from './Story.astro';
+import Dishes from './Dishes.astro';
+import Rooms from './Rooms.astro';
+import Reserve from './Reserve.astro';
+import Footer from './Footer.astro';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const c = content[lang];
+---
+
+<Header lang={lang} c={c} />
+<main id="main" tabindex="-1" class="outline-none">
+  <Hero lang={lang} c={c} />
+  <Story c={c} />
+  <Dishes lang={lang} c={c} />
+  <Rooms c={c} />
+  <Reserve lang={lang} c={c} />
+</main>
+<Footer lang={lang} c={c} />

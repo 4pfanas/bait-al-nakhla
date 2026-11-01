@@ -1,0 +1,68 @@
+---
+import type { Content } from '../data/content';
+import Eyebrow from './ui/Eyebrow.astro';
+import SmartImage from './ui/SmartImage.astro';
+
+interface Props {
+  c: Content;
+}
+const { c } = Astro.props;
+const s = c.story;
+// Split by spaces only, never letters, so Arabic letters keep joining.
+const words = s.statement.split(' ');
+---
+
+<section id="story" class="relative overflow-hidden bg-coal" aria-labelledby="story-title" data-story>
+  <div class="container-x grid min-h-[100svh] items-center gap-16 py-24 md:py-32 lg:grid-cols-12 lg:gap-10 lg:py-28">
+    <div class="lg:col-span-7">
+      <Eyebrow as="h2" id="story-title">{s.eyebrow}</Eyebrow>
+
+      <p class="t-display t-statement mt-8 text-sand md:mt-10" data-story-statement>
+        <span class="sr-only">{s.statement}</span>
+        <span aria-hidden="true">
+          {
+            words.map((w) => (
+              <>
+                <span class="story-word">{w}</span>{' '}
+              </>
+            ))
+          }
+        </span>
+      </p>
+
+      <ol class="mt-12 grid gap-5 border-t border-line pt-8 sm:grid-cols-3 sm:gap-0 md:mt-16">
+        {
+          s.facts.map((f) => (
+            <li class="flex items-baseline gap-4 sm:border-e sm:border-line sm:px-6 sm:first:ps-0 sm:last:border-e-0" data-story-fact>
+              <span class="t-display text-2xl text-gold">{f.num}</span>
+              <span class="t-body text-[0.95rem] text-sand/75">{f.text}</span>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <div class="relative mx-auto w-[76%] max-w-sm lg:col-span-4 lg:col-start-9 lg:mx-0 lg:w-full lg:max-w-none">
+      <div class="relative aspect-[3/4]">
+        <svg
+          class="pointer-events-none absolute -inset-3 h-[calc(100%+1.5rem)] w-[calc(100%+1.5rem)] overflow-visible text-gold md:-inset-4 md:h-[calc(100%+2rem)] md:w-[calc(100%+2rem)]"
+          viewBox="0 0 100 133.33"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+        >
+          <path
+            d="M0.5 133.3 V50 A49.5 49.5 0 0 1 99.5 50 V133.3"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1"
+            vector-effect="non-scaling-stroke"
+            pathLength="1"
+            data-story-path></path>
+        </svg>
+        <div class="arch relative h-full w-full bg-smoke" data-story-arch>
+          <SmartImage name="story-hands" alt={s.imageAlt} sizes="(min-width: 1024px) 30vw, 76vw" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

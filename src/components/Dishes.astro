@@ -1,0 +1,81 @@
+---
+import type { Lang } from '../data/site';
+import { whatsappLink } from '../data/site';
+import type { Content } from '../data/content';
+import Button from './ui/Button.astro';
+import SmartImage from './ui/SmartImage.astro';
+
+interface Props {
+  lang: Lang;
+  c: Content;
+}
+const { lang, c } = Astro.props;
+const p = c.plates;
+---
+
+<!-- Desktop: the section pins and this whole row travels horizontally (title → four plates → CTA).
+     Phones/tablets: the same row simply stacks. -->
+<section id="plates" class="relative overflow-hidden" aria-labelledby="plates-title" data-dishes>
+  <div class="py-24 md:py-32 lg:flex lg:h-[100svh] lg:items-center lg:py-0 lg:pt-[60px]">
+    <div
+      class="container-x flex flex-col gap-24 lg:w-max lg:max-w-none lg:flex-row lg:items-center lg:gap-[6vw] lg:pe-[10vw]"
+      data-dishes-track
+    >
+      <div class="lg:w-[min(30rem,32vw)] lg:shrink-0" data-fade>
+        <h2 id="plates-title" class="t-display t-h2 max-w-[9ch] text-sand">{p.title}</h2>
+        <p class="t-body mt-6 max-w-xs text-mute">{p.intro}</p>
+        <div class="mt-10 hidden items-center gap-4 lg:flex" aria-hidden="true">
+          <span class="h-px w-16 bg-gold"></span>
+          <svg class="h-3 w-5 text-gold rtl:-scale-x-100" viewBox="0 0 20 12" fill="none" stroke="currentColor" stroke-width="1.1">
+            <path d="M0 6h18M13 1l5 5-5 5"></path>
+          </svg>
+        </div>
+      </div>
+
+      <ol class="flex flex-col gap-24 lg:flex-row lg:items-center lg:gap-[6vw]">
+        {
+          p.items.map((d, i) => (
+            <li
+              class:list={[
+                'dish-card relative lg:w-[min(25rem,calc(52svh*0.8))] lg:shrink-0',
+                i % 2 === 1 && 'lg:translate-y-[6svh]',
+                i % 2 === 0 && 'lg:-translate-y-[2svh]',
+              ]}
+              data-dish
+            >
+              <div class="relative">
+                <span
+                  class="numeral-outline t-display pointer-events-none absolute -top-[0.42em] start-[-0.06em] z-10 text-[5.5rem] leading-none lg:text-[clamp(4.5rem,11svh,7rem)]"
+                  aria-hidden="true"
+                >
+                  {d.num}
+                </span>
+                <div class="arch relative aspect-[4/5] w-full bg-smoke">
+                  <div class="h-full w-full scale-[1.12]" data-dish-img>
+                    <SmartImage name={d.image} alt={d.alt} sizes="(min-width: 1024px) 25rem, 90vw" />
+                  </div>
+                </div>
+              </div>
+              <div class="mt-7 flex items-baseline justify-between gap-6 border-b border-line pb-4">
+                <h3 class="t-display t-h3 text-sand">{d.name}</h3>
+                <span class="t-eyebrow shrink-0 text-gold-bright">{d.price}</span>
+              </div>
+              <p class="t-body mt-4 max-w-[24rem] text-[1rem] text-sand/70">{d.desc}</p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="flex flex-col items-start gap-8 lg:w-[min(24rem,28vw)] lg:shrink-0" data-fade>
+        <span class="t-display text-[clamp(2.25rem,4vw,3.5rem)] leading-tight text-sand ltr:italic">{p.hungry}</span>
+        <Button href={whatsappLink(lang)} label={c.cta.reserve} external />
+      </div>
+    </div>
+  </div>
+
+  <div class="container-x absolute inset-x-0 bottom-[3svh] hidden lg:block" aria-hidden="true">
+    <div class="relative h-px w-full bg-line">
+      <div class="absolute inset-0 origin-left scale-x-0 bg-gold rtl:origin-right" data-dishes-progress></div>
+    </div>
+  </div>
+</section>

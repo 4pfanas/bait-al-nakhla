@@ -1,0 +1,84 @@
+---
+import type { Lang } from '../data/site';
+import { whatsappLink } from '../data/site';
+import type { Content } from '../data/content';
+import Pattern from './ornament/Pattern.astro';
+import Eyebrow from './ui/Eyebrow.astro';
+import Button from './ui/Button.astro';
+import SmartImage from './ui/SmartImage.astro';
+
+interface Props {
+  lang: Lang;
+  c: Content;
+}
+const { lang, c } = Astro.props;
+const h = c.hero;
+---
+
+<section id="top" class="hero relative isolate min-h-[100svh] overflow-hidden" data-hero aria-labelledby="hero-title">
+  <!-- Turning star pattern -->
+  <div
+    class="hero-pattern-mask pointer-events-none absolute -end-[45vw] -top-[8vh] -z-20 aspect-square w-[140vw] text-gold opacity-40 md:-end-[16vw] md:-top-[22vh] md:w-[80vw]"
+    data-hero-pattern
+    aria-hidden="true"
+  >
+    <div class="h-full w-full" data-hero-pattern-inner>
+      <Pattern id="pattern-hero" size={120} class="h-full w-full" />
+    </div>
+  </div>
+
+  <!-- Warm glow -->
+  <div
+    class="pointer-events-none absolute end-[4%] top-[26%] -z-20 h-[60vw] w-[60vw] rounded-full bg-gold/10 blur-[110px] md:h-[34vw] md:w-[34vw]"
+    aria-hidden="true"
+  >
+  </div>
+
+  <!-- Arch photograph -->
+  <div
+    class="absolute -end-[16vw] top-[84px] -z-10 aspect-[4/5] w-[88vw] md:-end-[3vw] md:top-[14vh] md:w-[min(42vw,36rem)]"
+    data-hero-parallax
+  >
+    <div class="arch-outline absolute inset-0 -translate-y-4 translate-x-4 rtl:-translate-x-4" aria-hidden="true"></div>
+    <div class="arch relative h-full w-full bg-smoke" data-hero-arch>
+      <div class="h-full w-full" data-hero-img>
+        <SmartImage name="hero-coffee" alt={h.imageAlt} sizes="(min-width: 768px) 42vw, 88vw" priority />
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-t from-ink via-ink/40 to-transparent md:from-ink/50 md:via-transparent"></div>
+    </div>
+  </div>
+
+  <div class="container-x relative flex min-h-[100svh] flex-col justify-end pb-24 pt-28 md:pb-[13vh]" data-hero-copy>
+    <Eyebrow data-hero-fade>{h.eyebrow}</Eyebrow>
+
+    <h1 id="hero-title" class="t-display t-hero mt-6 text-sand md:mt-8">
+      <span class="sr-only">{h.lines.join(' ')}</span>
+      <span aria-hidden="true">
+        {
+          h.lines.map((line, i) => (
+            <span class="block overflow-hidden pb-[0.08em]">
+              <span
+                class:list={['block', i === 2 && 'text-gold-bright', i === 2 && lang === 'en' && 'italic']}
+                data-hero-line
+              >
+                {line}
+              </span>
+            </span>
+          ))
+        }
+      </span>
+    </h1>
+
+    <div class="mt-8 flex flex-col gap-8 md:mt-12 md:flex-row md:items-end md:gap-14">
+      <p class="t-body max-w-[25rem]" data-hero-fade>{h.sub}</p>
+      <div data-hero-fade>
+        <Button href={whatsappLink(lang)} label={c.cta.reserve} external />
+      </div>
+    </div>
+  </div>
+
+  <div class="absolute bottom-8 end-5 hidden flex-col items-center gap-4 md:end-10 md:flex" data-hero-fade aria-hidden="true">
+    <span class="t-eyebrow text-mute">{h.scroll}</span>
+    <span class="scroll-cue relative block h-14 w-px overflow-hidden bg-line"></span>
+  </div>
+</section>

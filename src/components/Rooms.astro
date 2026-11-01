@@ -1,0 +1,80 @@
+---
+import type { Content } from '../data/content';
+import Eyebrow from './ui/Eyebrow.astro';
+import Lantern from './ornament/Lantern.astro';
+import Pattern from './ornament/Pattern.astro';
+import SmartImage from './ui/SmartImage.astro';
+
+interface Props {
+  c: Content;
+}
+const { c } = Astro.props;
+const r = c.rooms;
+
+// Deliberately uneven: different widths, offsets and parallax speeds.
+const layout = [
+  {
+    wrap: 'w-[88%] lg:col-span-5 lg:col-start-8 lg:w-full',
+    outline: 'translate-x-4 translate-y-4 rtl:-translate-x-4',
+    speed: 6,
+    sizes: '(min-width: 1024px) 36vw, 88vw',
+  },
+  {
+    wrap: 'ms-auto w-[72%] lg:col-span-4 lg:col-start-2 lg:-mt-40 lg:ms-0 lg:w-full',
+    outline: '-translate-x-4 -translate-y-4 rtl:translate-x-4',
+    speed: 14,
+    sizes: '(min-width: 1024px) 28vw, 72vw',
+  },
+  {
+    wrap: 'ms-[6%] w-[80%] lg:col-span-3 lg:col-start-8 lg:mt-28 lg:ms-0 lg:w-full',
+    outline: 'translate-x-3 -translate-y-3 rtl:-translate-x-3',
+    speed: 22,
+    sizes: '(min-width: 1024px) 21vw, 80vw',
+  },
+];
+---
+
+<section id="rooms" class="relative overflow-hidden bg-coal pb-16 pt-24 md:pb-20 md:pt-32 lg:pb-24 lg:pt-44" aria-labelledby="rooms-title">
+  <div class="container-x grid gap-y-20 lg:grid-cols-12 lg:gap-x-10 lg:gap-y-0">
+    <div class="lg:col-span-5 lg:row-start-1 lg:pt-28" data-fade>
+      <Eyebrow>{r.eyebrow}</Eyebrow>
+      <h2 id="rooms-title" class="t-display t-h2 mt-6 max-w-[11ch] text-sand">{r.title}</h2>
+      <div class="mt-10 h-10 w-40 text-gold-deep" aria-hidden="true">
+        <Pattern id="pattern-rooms" size={40} class="h-full w-full" />
+      </div>
+    </div>
+
+    {
+      r.items.map((room, i) => {
+        const l = layout[i];
+        return (
+          <figure class:list={['room relative', l.wrap, i === 0 && 'lg:row-start-1']} data-room data-speed={l.speed}>
+            <div class="relative aspect-[3/4]">
+              <div class:list={['arch-outline absolute inset-0', l.outline]} aria-hidden="true" />
+              <div class="arch relative h-full w-full bg-smoke">
+                <div class="h-full w-full" data-room-img>
+                  <SmartImage name={room.image} alt={room.alt} sizes={l.sizes} />
+                </div>
+              </div>
+            </div>
+            <figcaption class="mt-7 flex gap-4">
+              <Lantern class="mt-1 h-8 w-5 shrink-0 text-gold" />
+              <div>
+                <h3 class="t-display t-h3 overflow-hidden text-sand">
+                  <span class="block" data-mask>
+                    {room.name}
+                  </span>
+                </h3>
+                <p class="t-body mt-2 overflow-hidden text-sand/70">
+                  <span class="block" data-mask>
+                    {room.line}
+                  </span>
+                </p>
+              </div>
+            </figcaption>
+          </figure>
+        );
+      })
+    }
+  </div>
+</section>

@@ -1,0 +1,15 @@
+---
+// Small gold label with a leading hairline. Can render as a heading when it names a section.
+interface Props {
+  as?: 'p' | 'h2' | 'span';
+  id?: string;
+  class?: string;
+  [key: string]: unknown;
+}
+const { as: Tag = 'p', id, class: cls = '', ...rest } = Astro.props;
+---
+
+<Tag id={id} class:list={['t-eyebrow flex items-center gap-4', cls]} {...rest}>
+  <span class="inline-block h-px w-8 shrink-0 bg-gold" aria-hidden="true"></span>
+  <span><slot /></span>
+</Tag>
